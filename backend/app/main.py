@@ -1,25 +1,16 @@
 from fastapi import FastAPI
-from typing import Optional
-from dotenv import load_dotenv
-import os
-from sqlalchemy import create_engine, text
-
-load_dotenv()
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.settings import settings
+from app.api.router import router
 
 # Variáveis globais
 app = FastAPI()
-DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL, echo=True)
 
-@app.get("/health")
-def health_check() -> dict:
-    return {"status": "ok"}
-
-@app.get("/db-check")
-def check_db_conn() -> dict:
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-        return {"db": "ok"}
-    except Exception as e:
-        return {"db": "disconnected", "error": str(e)}
+app.include_router(router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
