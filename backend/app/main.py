@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.settings import settings
+from app.core.settings import get_settings
 from app.api.router import router
 
 # Variáveis globais
+settings = get_settings()
 app = FastAPI()
 
 app.include_router(router)
