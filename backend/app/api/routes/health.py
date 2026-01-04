@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from sqlalchemy import text, create_engine
-
 from app.core.db import get_db
 
 router = APIRouter()
@@ -13,7 +12,6 @@ def health_check() -> dict:
 @router.get("/db-check")
 def check_db_conn() -> dict:
     try:
-        
         db.execute(text("SELECT 1"))
         return {"db": "ok"}
     except Exception as e:
