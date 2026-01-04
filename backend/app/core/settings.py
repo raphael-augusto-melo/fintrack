@@ -1,5 +1,6 @@
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from functools import lru_cache
 
 class Settings(BaseSettings):
     ENV: str = "development"
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+@lru_cache
 def get_settings() -> Settings:
     return Settings()
 
