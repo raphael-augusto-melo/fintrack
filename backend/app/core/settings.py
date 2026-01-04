@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
     JWT_SECRET: str = "dev-secret-change-me"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
 
     model_config = SettingsConfigDict(
         env_file=".env", 
