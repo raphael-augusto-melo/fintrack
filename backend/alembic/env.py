@@ -11,6 +11,7 @@ from app.core.settings import get_settings
 
 # Models
 import app.models.user
+import app.models.transaction
 
 settings = get_settings()
 # this is the Alembic Config object, which provides
