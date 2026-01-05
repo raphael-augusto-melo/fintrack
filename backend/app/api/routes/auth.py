@@ -22,7 +22,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     except EmailAlreadyExistsError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Email '{payload.email}' já está em uso."
+            detail=f"Este e-mail já está em uso."
         )
     except Exception:
         raise HTTPException(
