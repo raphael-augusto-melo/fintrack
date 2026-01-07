@@ -36,4 +36,4 @@ class Transaction(Base):
     description: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    category: Mapped[Optional[TransactionCategory]] = mapped_column(Enum(TransactionCategory), nullable=True, index=True)
+    category: Mapped[TransactionCategory] = mapped_column(Enum(TransactionCategory), nullable=False, index=True)
