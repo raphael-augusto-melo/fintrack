@@ -1,5 +1,5 @@
 from datetime import date, datetime, time, timedelta, timezone
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
 from app.models.user import User
@@ -36,7 +36,7 @@ def list_transactions(
         end_date: Optional[date],
         limit: int = 20,
         offset: int = 0
-    ):
+    ) -> List[Transaction]:
         query = db.query(Transaction).filter(Transaction.user_id == user.id)
         
         if type:
@@ -62,31 +62,20 @@ def list_transactions(
                                         )
             query = query.filter(Transaction.occurred_at < end_dt_exclusive)
         
-        query = (
+        result = (
             query
             .order_by(Transaction.occurred_at.desc())
             .offset(offset).limit(limit)
             .all()
             )
         
-        return query
-        
+        return result
+             
 
-        
-
-
-        
-        
-        
-
-
-        
-
-def get_transaction(db: Session, user: User, transaction_id: UUID):
+def get_transaction(db: Session, user: User, transaction_id: UUID) -> Transaction:
     transaction = (
         db.query(Transaction)
         .filter(
-            Transaction,
             Transaction.id == transaction_id,
             Transaction.user_id == user.id
         )
