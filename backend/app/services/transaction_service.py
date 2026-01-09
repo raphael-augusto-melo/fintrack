@@ -4,7 +4,8 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.transaction import Transaction, TransactionCategory, TransactionType
-from app.schemas.transactions import TransactionCreate
+from app.schemas.transactions import TransactionCreate, TransactionUpdate
+from app.services.exceptions import NoFieldToPatchError
 
 def create_transaction(db: Session, user: User, data: TransactionCreate) -> Transaction:
     
@@ -85,8 +86,35 @@ def get_transaction(db: Session, user: User, transaction_id: UUID) -> Transactio
 
     
 
-def update_transaction(db: Session, user: User, transaction_id, data):
-    pass
+def update_transaction(db: Session, user: User, transaction_id: UUID, data: TransactionUpdate) -> Transaction | None:
+    
+    transaction = get_transaction(db, user, transaction_id)
+    if not transaction:
+        return None
+    
+    updates = data.model_dump(exclude_unset=True)
+    if not updates:
+        raise NoFieldToPatchError("Nenhum campo preenchido para atualizar.")
+    
+    for key, value in updates.items():
+        setattr(transaction, key, value)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise 
+    db.refresh(transaction)
+    return transaction
 
-def delete_transaction(db: Session, user: User, transaction_id):
-    pass
+def delete_transaction(db: Session, user: User, transaction_id: UUID) -> bool | None:
+    transaction = get_transaction(db, user, transaction_id)
+    if not transaction:
+        return None
+    
+    db.delete(transaction)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return True
