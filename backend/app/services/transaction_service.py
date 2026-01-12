@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.transaction import Transaction, TransactionCategory, TransactionType
-from app.schemas.transactions import TransactionCreate, TransactionUpdate
+from app.schemas.transaction import TransactionCreate, TransactionUpdate
 from app.services.exceptions import NoFieldToPatchError
 
 def create_transaction(db: Session, user: User, data: TransactionCreate) -> Transaction:
