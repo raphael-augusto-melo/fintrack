@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
-from app.api.routes.auth import get_current_user
+from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.services.report_service import month_summary
 from app.services.exceptions import InvalidMonthFormatError
