@@ -2,7 +2,7 @@
 
 from datetime import datetime, timezone
 from decimal import Decimal
-from typing import Tuple
+from typing import List, Tuple
 import re
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -10,7 +10,7 @@ from sqlalchemy import func
 from app.services.exceptions import InvalidMonthFormatError
 from app.models.user import User
 from app.models.transaction import Transaction, TransactionType
-from app.schemas.reports import MonthSummaryResponse
+from app.schemas.reports import CategoryTotalItem, MonthSummaryResponse
 
 
 def get_month_range(month: str) -> Tuple[datetime, datetime]:
@@ -76,3 +76,28 @@ def month_summary(db: Session, user: User, month: str) -> MonthSummaryResponse:
 
     return response
 
+def by_category_totals(db: Session, user: User, month: str, transaction_type: TransactionType = TransactionType.EXPENSE) -> List[CategoryTotalItem]:
+    start_dt, end_dt_exclusive = get_month_range(month)
+    q = (db.query(Transaction.category, func.sum(Transaction.amount))
+         .filter(
+            Transaction.user_id == user.id, 
+            Transaction.type == transaction_type,
+            Transaction.occurred_at >= start_dt, 
+            Transaction.occurred_at < end_dt_exclusive
+         )
+         .group_by(Transaction.category)
+         .order_by(func.sum(Transaction.amount).desc())
+         .all()
+        
+        )
+    if not q:
+        return []
+    result = []
+    
+    for line in q:
+        category, total = line
+        if total is None:
+            total = Decimal("0")
+        result.append(CategoryTotalItem(category=category, total=total))
+    
+    return result
