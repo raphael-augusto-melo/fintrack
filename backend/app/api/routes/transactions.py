@@ -14,7 +14,7 @@ from app.services.transaction_service import (
     delete_transaction
 )
 from app.models.user import User
-from app.api.routes.auth import get_current_user
+from app.core.dependencies import get_current_user
 from app.models.transaction import TransactionCategory, TransactionType
 from app.services.exceptions import NoFieldToPatchError
 
