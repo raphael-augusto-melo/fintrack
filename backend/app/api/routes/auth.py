@@ -9,6 +9,7 @@ from app.services.auth_service import authenticate_user, register_user
 from app.core.security import create_access_token, decode_access_token
 from app.models.user import User
 from app.services.exceptions import EmailAlreadyExistsError
+from app.core.dependencies import get_current_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -40,32 +41,6 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         )
     access_token = create_access_token(data={"sub": str(user.id)})
     return TokenResponse(access_token=access_token, token_type="bearer")
-
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    try:
-        payload = decode_access_token(token)
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token inválido ou expirado.",
-                headers={"WWW-Authenticate": "Bearer"}
-            )
-        user_uuid = UUID(user_id)
-        user = db.query(User).filter(User.id == user_uuid).first()
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Usuário não encontrado.",
-                headers={"WWW-Authenticate": "Bearer"}
-            )
-        return user
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token inválido ou expirado.",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
 
 @router.get("/me", response_model=UserResponse)
 def read_current_user(current_user: User = Depends(get_current_user)):
