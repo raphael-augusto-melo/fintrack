@@ -9,4 +9,5 @@ class NoFieldToPatchError(Exception):
 
 class InvalidMonthFormatError(Exception):
     """Exception levantada quando alguém insere o mês no formato errado. Formato esperado: YYYY-mm"""
-    pass
+    def __init__(self):
+        self.detail = "Mês no formato inválido."
