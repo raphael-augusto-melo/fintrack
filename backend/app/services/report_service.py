@@ -13,11 +13,15 @@ from app.models.transaction import Transaction, TransactionType
 from app.schemas.reports import CategoryTotalItem, MonthSummaryResponse
 
 
-def get_month_range(month: str) -> Tuple[datetime, datetime]:
+def get_default_month() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m")
+
+def get_month_range(month: str | None = None) -> Tuple[datetime, datetime]:
+    if month is None:
+        month = get_default_month()
     pattern = r"^\d{4}-(0[1-9]|1[0-2])$"
     if not re.match(pattern, month):
-        raise InvalidMonthFormatError("mes_fora_formato_esperado")
-
+        raise InvalidMonthFormatError()
     parsed_month_range = month.split('-')
     parsed_year = int(parsed_month_range[0])
     parsed_month = int(parsed_month_range[1])
@@ -32,7 +36,7 @@ def get_month_range(month: str) -> Tuple[datetime, datetime]:
     return start_dt, end_dt_exclusive
 
 
-def month_summary(db: Session, user: User, month: str) -> MonthSummaryResponse:
+def month_summary(db: Session, user: User, month: str | None = None) -> MonthSummaryResponse:
     start_dt, end_dt_exclusive = get_month_range(month)
     
     incomes = (
@@ -100,4 +104,4 @@ def by_category_totals(db: Session, user: User, month: str, transaction_type: Tr
             total = Decimal("0")
         result.append(CategoryTotalItem(category=category, total=total))
     
-    return result
+    return 
