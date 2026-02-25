@@ -20,6 +20,7 @@ class TransactionCategory(enum.Enum):
     TRANSPORTE = "transporte"
     LAZER = "lazer"
     SAUDE = "saude"
+    INVESTIMENTOS = "investimentos"
     OUTROS = "outros"
 
 class Transaction(Base):
