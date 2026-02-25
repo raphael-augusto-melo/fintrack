@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from uuid import UUID
 
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse
 from app.core.db import get_db
 from app.services.auth_service import authenticate_user, register_user
-from app.core.security import create_access_token, decode_access_token
+from app.core.security import create_access_token
 from app.models.user import User
 from app.services.exceptions import EmailAlreadyExistsError
 from app.core.dependencies import get_current_user
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
