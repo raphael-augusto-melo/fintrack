@@ -104,4 +104,4 @@ def by_category_totals(db: Session, user: User, month: str, transaction_type: Tr
             total = Decimal("0")
         result.append(CategoryTotalItem(category=category, total=total))
     
-    return 
+    return result
