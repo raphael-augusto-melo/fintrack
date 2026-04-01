@@ -1,4 +1,5 @@
 import enum
+import math
 from typing import List, Optional
 import uuid
 from datetime import date, datetime
@@ -49,7 +50,7 @@ CATEGORY_MAPPINGS: dict[TransactionCategory, BudgetBucket] = {
 }
 
 for mtd, buckets in METHODOLOGY_VALUES.items():
-    if round(sum(buckets.values()), 10) != 1.0:
+    if not math.isclose(sum(buckets.values()), 1.0):
         raise ValueError("Soma dos valores dos buckets passou o limite de 100%")
 
 class BudgetTemplate(Base):
