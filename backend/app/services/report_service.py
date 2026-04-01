@@ -8,7 +8,7 @@ from sqlalchemy import func
 from app.services.exceptions import InvalidMonthFormatError
 from app.models.user import User
 from app.models.transaction import Transaction, TransactionType
-from app.schemas.reports import CategoryTotalItem, MonthSummaryResponse
+from app.schemas.report import CategoryTotalItem, MonthSummaryResponse
 
 
 def get_default_month() -> str:

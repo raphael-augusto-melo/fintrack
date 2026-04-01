@@ -1,7 +1,7 @@
 from app.api.routes.health import router as health_router
 from app.api.routes.auth import router as auth_router
-from app.api.routes.transactions import router as transactions_router
-from app.api.routes.reports import router as reports_router
+from app.api.routes.transaction import router as transactions_router
+from app.api.routes.report import router as reports_router
 
 from fastapi import APIRouter
 
