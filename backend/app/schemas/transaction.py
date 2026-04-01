@@ -43,7 +43,7 @@ class TransactionResponse(BaseModel):
     user_id: UUID
     type: TransactionType
     amount: Decimal
-    description: Optional[str]
+    description: Optional[str] = None
     created_at: datetime
     occurred_at: datetime
     category: TransactionCategory
